@@ -1,0 +1,54 @@
+const express = require('express');
+const { google } = require('googleapis');
+const nodemailer = require('nodemailer');
+const { OAuth2Client } = require('google-auth-library');
+
+const app = express();
+const port = 3000;
+
+// Set up OAuth client
+const oAuth2Client = new OAuth2Client(
+  'YOUR_CLIENT_ID',
+  'YOUR_CLIENT_SECRET',
+  'YOUR_REDIRECT_URL'
+);
+
+// Set up Nodemailer
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'your-email@gmail.com',
+    pass: 'your-email-password',
+  },
+});
+
+// Middleware to authenticate requests
+const authenticate = async (req, res, next) => {
+  // Implement your authentication logic here
+  // Use OAuth2Client to authenticate
+  next();
+};
+
+// Route to check for new emails and send replies
+app.get('/check-emails', authenticate, async (req, res) => {
+  try {
+    // Implement logic to check for new emails, send replies, and add labels
+    // Use Google's Gmail API for these operations
+    // Refer to Gmail API documentation for details
+    res.send('Email checking and replying logic goes here.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Set up interval for periodic email checking
+setInterval(() => {
+  // Trigger the email-checking logic here
+  console.log('Checking emails...');
+}, Math.floor(Math.random() * (120000 - 45000 + 1) + 45000));
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
